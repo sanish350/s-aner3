@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoScan — Сканер упаковки</title>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;font-family:system-ui,sans-serif}
+body{background:#f4f6f2;color:#222;max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:23px;margin:12px 0;text-align:center}
+p{line-height:1.45}
+#video{width:100%;border-radius:12px;background:#000;display:block;aspect-ratio:4/3;object-fit:cover}
+#controls{text-align:center;margin-top:10px}
+button,.file-label{display:inline-block;padding:11px 16px;border:0;border-radius:9px;background:#277b48;color:#fff;font-size:16px;margin:4px;cursor:pointer}
+button.secondary{background:#326fc1}
+button.demo{background:#66804a}
+.manual-row{display:flex;gap:8px;margin-top:10px}
+.manual-row input{min-width:0;flex:1;padding:11px;font-size:16px;border-radius:8px;border:1px solid #ccc}
+#galleryInput{display:none}
+#camError{margin-top:8px}
+.err{padding:10px;border-radius:8px;background:#fde8e8;color:#963333;font-size:14px}
+.status{margin-top:10px;padding:10px;border-radius:8px;background:#e8f1e8;color:#285d37;font-size:14px}
+#result{margin-top:16px;padding:16px;border-radius:12px;background:#fff;box-shadow:0 2px 8px #0001;display:none;overflow:auto}
+#result img{max-width:110px;border-radius:8px;float:right;margin-left:12px}
+.material{margin-top:12px;padding:12px;border-radius:10px;font-size:16px;font-weight:600;background:#dce9ff;border:2px solid #2f6fd6}
+.guess{background:#fff3d6;border-color:#d6a72f}
+.unknown{background:#f2f2f2;border-color:#aaa}
+.disposal{margin-top:8px;padding:12px;border-radius:10px;font-size:15px;background:#e4f4e0;border:2px solid #4a9c3f}
+.note{font-size:13px;color:#666;margin-top:12px}
+</style>
+</head>
+
+<body>
+
+<h1>EcoScan — сканер упаковки</h1>
+
+<div id="videoWrap">
+  <video id="video" autoplay muted playsinline></video>
+</div>
+
+<div id="camError"></div>
+
+<div id="controls">
+  <button id="scanBtn" onclick="toggleScan()">Сканировать камерой</button>
+
+  <label class="file-label" for="galleryInput">Выбрать фото</label>
+  <input id="galleryInput" type="file" accept="image/*">
+
+  <button class="demo" onclick="showExample()">Показать пример</button>
+</div>
+
+<div class="manual-row">
+  <input id="manual" inputmode="numeric" autocomplete="off"
+  placeholder="Или введите штрихкод вручную">
+
+  <button class="secondary"
+  onclick="lookup(document.getElementById('manual').value)">
+  Проверить
+  </button>
+</div>
+
+<div id="scanStatus" class="status" hidden></div>
+
+<div id="result">
+  <div id="productInfo"></div>
+  <div id="materialInfo"></div>
+</div>
+
+<p class="note">
+База товаров: Open Food Facts.
+Данные об упаковке могут быть неполными —
+сверяйте материал с маркировкой на самой упаковке.
+</p>
+
+<script>
+
+const video = document.getElementById('video');
+const scanBtn = document.getElementById('scanBtn');
+const scanStatus = document.getElementById('scanStatus');
+const camError = document.getElementById('camError');
+
+let zxingReader = null;
+let scanning = false;
+let scanHandled = false;
+
+
+// ===== 1. СКАНИРОВАНИЕ КАМЕРОЙ =====
+
+async function toggleScan() {
+
+  if (scanning) {
+    stopScan();
+    return;
+  }
+
+  camError.innerHTML = '';
+
+  scanStatus.hidden = false;
+  scanStatus.textContent =
+    'Запускаем камеру. Наведите её на штрихкод…';
+
+  scanBtn.textContent = 'Остановить камеру';
+
+  scanning = true;
+  scanHandled = false;
+
+  if (!navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia) {
+
+    showCameraError(
+      'Браузер не разрешает доступ к камере. Откройте сайт по HTTPS или через localhost.'
+    );
+
+    return;
+  }
+
+  if (typeof ZXing === 'undefined' ||
+      !ZXing.BrowserMultiFormatReader) {
+
+    showCameraError(
+      'Не загрузилась библиотека сканирования. Проверьте интернет и обновите страницу.'
+    );
+
+    return;
+  }
+
+  try {
+
+    zxingReader = new ZXing.BrowserMultiFormatReader();
+
+    zxingReader.decodeFromVideoDevice(
+      undefined,
+      video,
+      (result, error) => {
+
+        if (!scanning || scanHandled) return;
+
+        if (result) {
+
+          scanHandled = true;
+
+          const barcode = result.getText();
+
+          stopScan();
+
+          scanStatus.textContent =
+            'Штрихкод считан: ' + barcode + '. Ищем товар…';
+
+          lookup(barcode);
+        }
+
+      }
+    ).catch(error => {
+
+      showCameraError(
+        'Не удалось запустить сканирование: ' +
+        (error.message || error)
+      );
+
+    });
+
+  } catch (error) {
+
+    showCameraError(
+      'Ошибка сканера: ' + (error.message || error)
+    );
+
+  }
+}
+
+
+function showCameraError(message) {
+
+  stopScan();
+
+  camError.innerHTML =
+    '<div class="err">' + escapeHtml(message) + '</div>';
+
+}
+
+
+function stopScan() {
+
+  scanning = false;
+
+  scanBtn.textContent = 'Сканировать камерой';
+
+  if (zxingReader) {
+
+    try {
+      zxingReader.reset();
+    } catch (e) {}
+
+    zxingReader = null;
+  }
+
+  if (video.srcObject) {
+
+    video.srcObject.getTracks().forEach(track => {
+      track.stop();
+    });
+
+    video.srcObject = null;
+  }
+
+  if (!scanHandled) {
+    scanStatus.hidden = true;
+  }
+
+}
+
+
+// ===== 2. СКАНИРОВАНИЕ ФОТО ИЗ ГАЛЕРЕИ =====
+
+document.getElementById('galleryInput')
+.addEventListener('change', async function(event) {
+
+  const file = event.target.files &&
+               event.target.files[0];
+
+  if (!file) return;
+
+  stopScan();
+
+  camError.innerHTML = '';
+
+  scanStatus.hidden = false;
+  scanStatus.textContent =
+    'Считываем штрихкод с фотографии…';
+
+  if (typeof ZXing === 'undefined' ||
+      !ZXing.BrowserMultiFormatReader) {
+
+    scanStatus.textContent = '';
+
+    showCameraError(
+      'Не загрузилась библиотека сканирования. Проверьте интернет и обновите страницу.'
+    );
+
+    return;
+  }
+
+  const imageUrl = URL.createObjectURL(file);
+
+  const image = new Image();
+
+  try {
+
+    image.src = imageUrl;
+
+    await image.decode();
+
+    const reader = new ZXing.BrowserMultiFormatReader();
+
+    const result =
+      await reader.decodeFromImageElement(image);
+
+    const barcode = result.getText();
+
+    scanStatus.textContent =
+      'Штрихкод считан: ' + barcode + '. Ищем товар…';
+
+    lookup(barcode);
+
+  } catch (error) {
+
+    scanStatus.textContent = '';
+
+    camError.innerHTML =
+      '<div class="err">Не удалось найти штрихкод на фото. Сделайте чёткое фото так, чтобы весь штрихкод был виден без бликов, и попробуйте ещё раз.</div>';
+
+  } finally {
+
+    URL.revokeObjectURL(imageUrl);
+
+    event.target.value = '';
+
+  }
+
+});
+
+
+// ===== 3. ЗАЩИТА ТЕКСТА =====
+
+function escapeHtml(value) {
+
+  return String(value).replace(/[&<>"']/g, ch => ({
+
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+
+  }[ch]));
+
+}
+
+
+// ===== 4. ДЕМОНСТРАЦИОННЫЙ ПРИМЕР =====
+
+function showExample() {
+
+  stopScan();
+
+  document.getElementById('result').style.display = 'block';
+
+  document.getElementById('productInfo').innerHTML =
+    '<b>Молоко «Простоквашино» 2,5%</b><br>Простоквашино (демо-пример)';
+
+  document.getElementById('materialInfo').innerHTML =
+
+    '<div class="material guess">Упаковка: предположительно PET-бутылка (пластик, маркировка 1).<br>' +
+
+    '<span style="font-weight:400;font-size:14px">Это демонстрационный пример, а не результат реального сканирования.</span></div>' +
+
+    '<div class="disposal">Куда выбрасывать: проверьте местные правила приёма пластика.</div>';
+
+}
+
+
+// ===== 5. ПОИСК ТОВАРА В OPEN FOOD FACTS =====
+
+async function lookup(code) {
+
+  code = String(code || '').replace(/\D/g, '');
+
+  if (!code) {
+
+    camError.innerHTML =
+      '<div class="err">Введите или отсканируйте штрихкод.</div>';
+
+    return;
+  }
+
+  stopScan();
+
+  camError.innerHTML = '';
+
+  const box = document.getElementById('result');
+
+  box.style.display = 'block';
+
+  document.getElementById('productInfo').textContent =
+    'Ищем товар в базе…';
+
+  document.getElementById('materialInfo').innerHTML = '';
+
+  try {
+
+    const response = await fetch(
+
+      'https://world.openfoodfacts.org/api/v2/product/' +
+      encodeURIComponent(code) +
+
+      '.json?fields=product_name,product_name_ru,brands,image_front_url,packaging,packaging_materials,packaging_tags,categories,categories_tags'
+
+    );
+
+    const data = await response.json();
+
+    if (data.status !== 1 || !data.product) {
+
+      document.getElementById('productInfo').textContent =
+
+        'Товар со штрихкодом ' + code +
+        ' не найден в Open Food Facts. Можно проверить другой код или добавить сведения о товаре в базу.';
+
+      return;
+    }
+
+    const p = data.product;
+
+    const name =
+      p.product_name_ru ||
+      p.product_name ||
+      'Без названия';
+
+    const imageHtml = p.image_front_url
+
+      ? '<img src="' + escapeHtml(p.image_front_url) +
+        '" alt="Фото товара">'
+
+      : '';
+
+    document.getElementById('productInfo').innerHTML =
+
+      imageHtml +
+      '<b>' + escapeHtml(name) + '</b><br>' +
+      escapeHtml(p.brands || '');
+
+
+    const packText = [
+
+      (p.packaging_materials || [])
+        .map(m => (m && m.id) || m)
+        .join(', '),
+
+      (p.packaging_tags || []).join(', '),
+
+      p.packaging || ''
+
+    ].filter(Boolean).join(', ').trim();
+
+
+    const catText = [
+
+      (p.categories_tags || []).join(', '),
+
+      p.categories || ''
+
+    ].join(' ').toLowerCase();
+
+
+    document.getElementById('materialInfo').innerHTML =
+      buildMaterialInfo(packText, catText);
+
+    scanStatus.textContent =
+      'Готово. Штрихкод: ' + code;
+
+    scanStatus.hidden = false;
+
+  } catch (error) {
+
+    document.getElementById('productInfo').textContent =
+      'Не удалось получить данные. Проверьте подключение к интернету и попробуйте ещё раз.';
+
+  }
+
+}
+
+
+// ===== 6. ОПРЕДЕЛЕНИЕ МАТЕРИАЛА УПАКОВКИ =====
+
+const MATERIALS = [
+
+  ['PET (пластик, маркировка 1)',
+  /(pet|pete|polyethylene terephthalate|1-pet|пэт)/i],
+
+  ['HDPE (пластик, маркировка 2)',
+  /(hdpe|pe-hd|2-hdpe|пэвд)/i],
+
+  ['LDPE (плёнка или пакет, маркировка 4)',
+  /(ldpe|pe-ld|4-ldpe|плёнк|пакет|film|фольг)/i],
+
+  ['PP (пластик, маркировка 5)',
+  /(^|\W)(pp|polypropylene|5-pp|полипропилен)/i],
+
+  ['PS (пластик, маркировка 6)',
+  /(ps|polystyrene|6-ps|полистирол)/i],
+
+  ['Другой пластик (маркировка 7)',
+  /(other|7-o|plastic|пластик|plastique)/i],
+
+  ['Стекло',
+  /(glass|стекло|verre)/i],
+
+  ['Металл (алюминий или жесть)',
+  /(metal|aluminium|aluminum|steel|tin|метал|алюмин|жестян|can)/i],
+
+  ['Бумага или картон',
+  /(paper|cardboard|бумаг|картон|carton(?! brick))/i],
+
+  ['Тетрапак',
+  /(tetra|тетрапак|carton brick|brick)/i]
+
+];
+
+
+// ===== 7. ПРЕДПОЛОЖЕНИЕ О МАТЕРИАЛЕ ПО КАТЕГОРИИ =====
+
+const GUESS = [
+
+  ['Тетрапак (пакет из картона и фольги)',
+  /(juice|сок|nectar|нектар|milk|молок|kefir|кефир|cocktail|коктейль)/],
+
+  ['PET-бутылка (пластик, маркировка 1)',
+  /(milk|молок|вода|water|lemonade|лимонад|soda|напиток|beverage|oil|масло|ketchup|кетчуп|sauce|соус)/],
+
+  ['Алюминиевая банка (металл)',
+  /(beer|пиво|cola|кола|energy|энергетик|canned|консерв|tuna|тунец|beans|боб)/],
+
+  ['Стеклянная банка или бутылка (стекло)',
+  /(jar|банк|jam|варенье|honey|мёд|preserve|консерв|baby-food|детское-питание)/],
+
+  ['Банка из полипропилена (пластик, 5)',
+  /(yogurt|йогурт|sour-cream|сметан|cottage-cheese|творог|cheese|сыр|butter|масло-сливочн|margarine|маргарин|ice-cream|мороженое)/],
+
+  ['Плёнка или пакет (пластик, маркировка 4)',
+  /(chips|чипс|candy|конфет|sweet|сладост|snack|снек|chocolate|шоколад|cookie|печенье|bread|хлеб|bakery|выпечка|sausage|колбас|сосиск|dumpling|пельмен)/],
+
+  ['Картонная коробка (бумага/картон)',
+  /(pasta|макарон|cereal|хлопья|muesli|мюсли|flour|мука|sugar|сахар|rice|рис|grain|крупа|tea|чай|coffee|кофе|egg|яйц|waffle|вафли|pizza|пицца)/]
+
+];
+
+
+// ===== 8. РЕКОМЕНДАЦИИ ПО УТИЛИЗАЦИИ =====
+
+const DISPOSAL = {
+
+  plastic:
+  'Пластик: проверьте, принимает ли его ваш местный оператор раздельного сбора.',
+
+  glass:
+  'Стекло: сдавайте отдельно, если в вашем районе есть сбор стекла.',
+
+  metal:
+  'Металл: проверьте местные правила приёма металлической упаковки.',
+
+  paper:
+  'Бумага/картон: сдавайте сухими и чистыми, если это разрешено местными правилами.',
+
+  tetra:
+  'Комбинированная упаковка: проверьте, принимают ли тетрапак в вашем пункте сбора.',
+
+  unknown:
+  'Материал или местное правило приёма не удалось надёжно определить. Проверьте маркировку и правила вашего оператора.'
+
+};
+
+
+function disposalFor(label) {
+
+  if (label.startsWith('Стекло'))
+    return DISPOSAL.glass;
+
+  if (label.startsWith('Металл') ||
+      label.startsWith('Алюминиевая'))
+    return DISPOSAL.metal;
+
+  if (label.startsWith('Бумага') ||
+      label.startsWith('Картонная'))
+    return DISPOSAL.paper;
+
+  if (label.startsWith('Тетрапак'))
+    return DISPOSAL.tetra;
+
+  if (/пластик|ПЭТ|PET|HDPE|LDPE|PP|PS|Банка из полипропилена/i.test(label))
+    return DISPOSAL.plastic;
+
+  return DISPOSAL.unknown;
+
+}
+
+
+// ===== 9. ФОРМИРОВАНИЕ РЕЗУЛЬТАТА =====
+
+function buildMaterialInfo(packText, catText) {
+
+  if (packText) {
+
+    for (const [label, regex] of MATERIALS) {
+
+      if (regex.test(packText)) {
+
+        return
+
+          '<div class="material">Упаковка по данным базы: ' +
+          escapeHtml(label) +
+          '</div>' +
+
+          '<div class="disposal">' +
+          disposalFor(label) +
+          '</div>';
+
+      }
+
+    }
+
+    return
+
+      '<div class="material unknown">Данные об упаковке в базе: ' +
+      escapeHtml(packText) +
+      '. Точный материал автоматически определить не удалось.</div>' +
+
+      '<div class="disposal">' +
+      DISPOSAL.unknown +
+      '</div>';
+
+  }
+
+
+  for (const [label, regex] of GUESS) {
+
+    if (regex.test(catText)) {
+
+      return
+
+        '<div class="material guess">Упаковка предположительно: ' +
+        escapeHtml(label) +
+
+        '. Это догадка по категории товара, а не подтверждённые данные. Проверьте маркировку на упаковке.</div>' +
+
+        '<div class="disposal">' +
+        disposalFor(label) +
+        '</div>';
+
+    }
+
+  }
+
+
+  return
+
+    '<div class="material unknown">В базе нет достаточных данных об упаковке.</div>' +
+
+    '<div class="disposal">' +
+    DISPOSAL.unknown +
+    '</div>';
+
+}
+
+</script>
+
+</body>
+</html>
