@@ -21,7 +21,7 @@ body {
 }
 
 header {
-    background: linear-gradient(135deg, #176b3a, #279653);
+    background: linear-gradient(135deg,#176b3a,#279653);
     color: white;
     padding: 35px 20px;
     text-align: center;
@@ -30,11 +30,6 @@ header {
 header h1 {
     font-size: 30px;
     margin-bottom: 10px;
-}
-
-header p {
-    opacity: .9;
-    line-height: 1.5;
 }
 
 .container {
@@ -48,22 +43,12 @@ header p {
     padding: 25px;
     border-radius: 18px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 18px rgba(0,0,0,.06);
+    box-shadow: 0 4px 18px #0000000c;
 }
 
 h2 {
     color: #176b3a;
     margin-bottom: 18px;
-}
-
-video {
-    width: 100%;
-    max-height: 350px;
-    background: #111;
-    border-radius: 12px;
-    display: none;
-    object-fit: cover;
-    margin-bottom: 15px;
 }
 
 input {
@@ -91,43 +76,41 @@ button:hover, .file-label:hover {
     background: #176b3a;
 }
 
-button:disabled {
-    opacity: .6;
-    cursor: wait;
-}
-
-button.secondary {
+.secondary {
     background: #e4f2e8;
     color: #176b3a;
-}
-
-button.secondary:hover {
-    background: #d1e9d8;
 }
 
 .file-label input {
     display: none;
 }
 
+video {
+    width: 100%;
+    max-height: 350px;
+    background: #111;
+    border-radius: 12px;
+    display: none;
+    margin-bottom: 15px;
+}
+
 .status {
-    padding: 14px;
+    padding: 15px;
     border-radius: 10px;
     margin-top: 15px;
-    background: #edf5ef;
-    color: #245c37;
-    line-height: 1.5;
     display: none;
+    line-height: 1.5;
     white-space: pre-line;
 }
 
-.status.error {
-    background: #fff0ef;
-    color: #a52c25;
-}
-
-.status.success {
+.success {
     background: #e5f6e9;
     color: #176b3a;
+}
+
+.error {
+    background: #fff0ef;
+    color: #a52c25;
 }
 
 .result {
@@ -145,17 +128,12 @@ button.secondary:hover {
     width: 140px;
     max-height: 160px;
     object-fit: contain;
-    border-radius: 12px;
 }
 
 .product-name {
     font-size: 23px;
     font-weight: bold;
     margin-bottom: 8px;
-}
-
-.product-brand {
-    color: #718078;
 }
 
 .info-box {
@@ -165,8 +143,8 @@ button.secondary:hover {
     border-radius: 8px;
     margin-top: 15px;
     line-height: 1.6;
-    overflow-wrap: anywhere;
     white-space: pre-line;
+    overflow-wrap: anywhere;
 }
 
 .info-box h3 {
@@ -176,10 +154,9 @@ button.secondary:hover {
 
 footer {
     text-align: center;
-    color: #819087;
     padding: 25px;
+    color: #819087;
     font-size: 13px;
-    line-height: 1.5;
 }
 
 @media(max-width:600px) {
@@ -198,45 +175,34 @@ footer {
 
 <header>
     <h1>♻ Сортировка отходов</h1>
-    <p>Узнай, из чего сделан товар и как правильно утилизировать его упаковку</p>
+    <p>Узнай, как правильно сортировать упаковку товаров</p>
 </header>
 
 <div class="container">
 
     <div class="card">
-        <h2>Сканирование товара</h2>
+        <h2>Сканирование камерой</h2>
 
         <video id="video" autoplay muted playsinline></video>
 
-        <button id="startCameraButton" onclick="startCamera()">
-            Включить камеру
-        </button>
-
-        <button class="secondary" onclick="stopCamera()">
-            Выключить камеру
-        </button>
-
-        <div class="info-box">
-            Наведи камеру на штрихкод товара. Постарайся, чтобы код полностью помещался в кадре.
-        </div>
+        <button onclick="startCamera()">Включить камеру</button>
+        <button class="secondary" onclick="stopCamera()">Выключить камеру</button>
 
         <div id="cameraStatus" class="status"></div>
     </div>
 
     <div class="card">
-        <h2>Ввести штрихкод</h2>
+        <h2>Поиск по штрихкоду</h2>
 
         <input
             id="barcodeInput"
             type="text"
             inputmode="numeric"
+            placeholder="Введите штрихкод"
             maxlength="14"
-            placeholder="Введите штрихкод товара"
         >
 
-        <button id="searchButton" onclick="manualSearch()">
-            Найти товар
-        </button>
+        <button onclick="manualSearch()">Найти товар</button>
 
         <br>
 
@@ -246,11 +212,12 @@ footer {
         </label>
     </div>
 
-    <div id="mainStatus" class="status"></div>
+    <div id="status" class="status"></div>
 
     <div id="result" class="result">
 
         <div class="card">
+
             <h2>Информация о товаре</h2>
 
             <div class="product-top">
@@ -258,13 +225,13 @@ footer {
 
                 <div>
                     <div class="product-name" id="productName"></div>
-                    <div class="product-brand" id="productBrand"></div>
-                    <p id="productCode" style="margin-top:10px"></p>
+                    <div id="productBrand"></div>
+                    <div id="productCode"></div>
                 </div>
             </div>
 
             <div class="info-box">
-                <h3>Страна производства</h3>
+                <h3>Производство</h3>
                 <div id="countryInfo"></div>
             </div>
 
@@ -274,7 +241,7 @@ footer {
             </div>
 
             <div class="info-box">
-                <h3>Состав продукта</h3>
+                <h3>Состав</h3>
                 <div id="compositionInfo"></div>
             </div>
 
@@ -302,57 +269,44 @@ footer {
                 <h3>Дополнительная информация</h3>
                 <div id="additionalInfo"></div>
             </div>
-        </div>
 
+        </div>
     </div>
 
 </div>
 
 <footer>
     Данные предоставляются Open Food Facts.
-    Информация о товарах и упаковке может быть неполной.
+    Информация может быть неполной.
 </footer>
 
 <script>
-const API = "https://world.openfoodfacts.org/api/v3.6/product/";
+const API = "https://world.openfoodfacts.org";
 
 const video = document.getElementById("video");
-const mainStatus = document.getElementById("mainStatus");
+const statusBox = document.getElementById("status");
 const cameraStatus = document.getElementById("cameraStatus");
 const resultBlock = document.getElementById("result");
 
 let reader = null;
-let cameraControls = null;
-let searching = false;
-let cameraRunning = false;
+let controls = null;
+let busy = false;
 
-function showStatus(message, type = "") {
-    mainStatus.style.display = "block";
-    mainStatus.className = "status " + type;
-    mainStatus.textContent = message;
+function message(text, type = "") {
+    statusBox.style.display = "block";
+    statusBox.className = "status " + type;
+    statusBox.textContent = text;
 }
 
-function showCameraStatus(message, type = "") {
+function cameraMessage(text, type = "") {
     cameraStatus.style.display = "block";
     cameraStatus.className = "status " + type;
-    cameraStatus.textContent = message;
+    cameraStatus.textContent = text;
 }
 
-function setText(id, value) {
-    const element = document.getElementById(id);
-
-    if (value === undefined || value === null || value === "") {
-        element.textContent = "Информация отсутствует в базе данных.";
-    } else {
-        element.textContent = String(value);
-    }
-}
-
-function normalize(value) {
-    return String(value || "")
-        .toLowerCase()
-        .replace(/ё/g, "е")
-        .trim();
+function put(id, value) {
+    document.getElementById(id).textContent =
+        value || "Информация отсутствует в базе.";
 }
 
 function clearResult() {
@@ -372,58 +326,54 @@ function clearResult() {
         "materialInfo",
         "disposalInfo",
         "additionalInfo"
-    ].forEach(id => {
-        document.getElementById(id).textContent = "";
-    });
+    ].forEach(id => put(id, ""));
 }
 
-/* ПРОВЕРКА РОССИЙСКОГО ПРОИЗВОДСТВА */
+/* Проверка страны производства */
 
-function isRussianProduct(product) {
-    const places = normalize(product.manufacturing_places);
+function isRussian(product) {
 
-    if (!places) {
-        return false;
-    }
+    const places = [
+        product.manufacturing_places || "",
+        ...(product.manufacturing_places_tags || [])
+    ].join(" ").toLowerCase();
 
-    const patterns = [
-        /россия/i,
-        /российская федерация/i,
-        /\brussia\b/i,
-        /\brussian federation\b/i
+    if (!places.trim()) return false;
+
+    const tags = [
+        "россия",
+        "российская федерация",
+        "russia",
+        "russian federation",
+        "en:russia",
+        "ru:russia"
     ];
 
-    return patterns.some(pattern => pattern.test(places));
+    return tags.some(tag => places.includes(tag));
 }
 
-/* ПОЛУЧЕНИЕ ДАННЫХ */
+/* Получение информации о товаре */
 
-async function fetchProduct(code) {
-
-    const url =
-        API +
-        encodeURIComponent(code) +
-        ".json?cc=ru&lc=ru&tags_lc=ru";
+async function requestAPI(url) {
 
     const controller = new AbortController();
 
-    const timeout = setTimeout(() => {
-        controller.abort();
-    }, 15000);
+    const timeout = setTimeout(
+        () => controller.abort(),
+        12000
+    );
 
     try {
         const response = await fetch(url, {
-            method: "GET",
             signal: controller.signal,
             headers: {
                 "Accept": "application/json"
-            }
+            },
+            cache: "no-store"
         });
 
         if (!response.ok) {
-            throw new Error(
-                "Ошибка сервера Open Food Facts: HTTP " + response.status
-            );
+            throw new Error("HTTP " + response.status);
         }
 
         return await response.json();
@@ -433,9 +383,44 @@ async function fetchProduct(code) {
     }
 }
 
-/* УПАКОВКА */
+async function fetchProduct(code) {
+
+    const urls = [
+        API + "/api/v3/product/" +
+        encodeURIComponent(code) +
+        "?fields=all",
+
+        API + "/api/v2/product/" +
+        encodeURIComponent(code) +
+        ".json"
+    ];
+
+    let lastError;
+
+    for (const url of urls) {
+
+        try {
+            const data = await requestAPI(url);
+
+            if (data && data.product) {
+                return data.product;
+            }
+
+            lastError = new Error("Товар не найден.");
+
+        } catch (error) {
+            console.error("Ошибка API:", url, error);
+            lastError = error;
+        }
+    }
+
+    throw lastError || new Error("Сервер недоступен.");
+}
+
+/* Информация об упаковке */
 
 function getPackaging(product) {
+
     const result = [];
 
     if (product.packaging) {
@@ -446,10 +431,9 @@ function getPackaging(product) {
         result.push("Дополнительно: " + product.packaging_text);
     }
 
-    if (Array.isArray(product.packaging_tags) &&
-        product.packaging_tags.length) {
+    if (product.packaging_tags?.length) {
         result.push(
-            "Типы упаковки: " + product.packaging_tags.join(", ")
+            "Типы: " + product.packaging_tags.join(", ")
         );
     }
 
@@ -458,151 +442,118 @@ function getPackaging(product) {
         : "Информация об упаковке отсутствует.";
 }
 
-/* МАТЕРИАЛЫ */
+/* Материалы упаковки */
 
 function getMaterials(product) {
-    const materials = [];
+
+    const result = [];
 
     if (product.packaging_materials) {
-        materials.push(product.packaging_materials);
+        result.push(product.packaging_materials);
     }
 
-    if (Array.isArray(product.packaging_tags)) {
-        materials.push(...product.packaging_tags);
+    if (product.packaging_tags?.length) {
+        result.push(...product.packaging_tags);
     }
 
-    if (Array.isArray(product.packagings)) {
+    if (product.packagings?.length) {
         product.packagings.forEach(item => {
+
             if (item.material) {
-                materials.push(
-                    typeof item.material === "object"
-                        ? item.material.lc_name || item.material.id
-                        : item.material
+                const material = item.material;
+
+                result.push(
+                    typeof material === "object"
+                    ? material.lc_name || material.id
+                    : material
                 );
             }
         });
     }
 
-    const unique = [...new Set(materials.filter(Boolean))];
-
-    return unique.length
-        ? unique.join(", ")
-        : "Материал упаковки не указан.";
+    return [...new Set(result)].join(", ") ||
+        "Материалы упаковки не указаны.";
 }
 
-/* РЕКОМЕНДАЦИИ ПО СОРТИРОВКЕ */
+/* Сортировка */
 
 function getDisposal(materials) {
-    const text = normalize(materials);
-    const recommendations = [];
 
-    if (
-        text.includes("pet") ||
-        text.includes("пэт") ||
-        text.includes("polyethylene terephthalate")
-    ) {
-        recommendations.push(
-            "ПЭТ: проверь маркировку. Чистую пластиковую бутылку можно сдавать в соответствующий сбор пластика, если он предусмотрен местными правилами."
+    const text = materials.toLowerCase();
+    const result = [];
+
+    if (/pet|пэт|polyethylene terephthalate/.test(text)) {
+        result.push(
+            "ПЭТ: проверь маркировку. Чистые ПЭТ-бутылки можно сдавать в соответствующий сбор пластика."
         );
     }
 
-    if (
-        text.includes("hdpe") ||
-        text.includes("пнд") ||
-        text.includes("high density polyethylene")
-    ) {
-        recommendations.push(
-            "ПНД: проверь, принимается ли этот вид пластика в твоём пункте сбора."
+    if (/hdpe|пнд|high density polyethylene/.test(text)) {
+        result.push(
+            "ПНД: проверь возможность сдачи этого вида пластика."
         );
     }
 
-    if (
-        text.includes("polypropylene") ||
-        text.includes("полипропилен") ||
-        /\bpp\b/.test(text)
-    ) {
-        recommendations.push(
-            "Полипропилен: проверь маркировку и местные правила приёма пластика."
+    if (/polypropylene|полипропилен|en:pp/.test(text)) {
+        result.push(
+            "Полипропилен: проверь местные правила приёма пластика."
         );
     }
 
-    if (
-        text.includes("paper") ||
-        text.includes("cardboard") ||
-        text.includes("бумага") ||
-        text.includes("картон")
-    ) {
-        recommendations.push(
-            "Бумага и картон: обычно относятся к бумажному вторсырью. Упаковка должна быть сухой и чистой."
+    if (/paper|cardboard|бумага|картон/.test(text)) {
+        result.push(
+            "Бумага и картон: обычно сдаются в контейнер для макулатуры. Упаковка должна быть сухой и чистой."
         );
     }
 
-    if (
-        text.includes("glass") ||
-        text.includes("стекло")
-    ) {
-        recommendations.push(
+    if (/glass|стекло/.test(text)) {
+        result.push(
             "Стекло: сдавай в контейнер для стекла, если такой сбор предусмотрен."
         );
     }
 
-    if (
-        text.includes("aluminium") ||
-        text.includes("алюминий")
-    ) {
-        recommendations.push(
+    if (/aluminium|алюминий/.test(text)) {
+        result.push(
             "Алюминий: можно сдавать в соответствующий сбор металла."
         );
     }
 
-    if (!recommendations.length) {
-        return "Не удалось точно определить материал. Проверь маркировку на упаковке. Не выбрасывай её в переработку наугад.";
-    }
-
-    return recommendations.join("\n\n") +
-        "\n\nПравила приёма могут отличаться в зависимости от региона.";
+    return result.length
+        ? result.join("\n\n") +
+          "\n\nПроверяй местные правила сортировки."
+        : "Не удалось достоверно определить способ утилизации. Проверь маркировку упаковки.";
 }
 
-/* ПОИСК */
+/* Основной поиск */
 
 async function lookup(code) {
 
-    code = String(code || "").replace(/\D/g, "");
+    code = String(code).replace(/\D/g, "");
 
     if (!/^\d{8,14}$/.test(code)) {
-        showStatus(
-            "Введите корректный штрихкод длиной от 8 до 14 цифр.",
-            "error"
-        );
+        message("Введи корректный штрихкод от 8 до 14 цифр.", "error");
         return;
     }
 
-    if (searching) return;
+    if (busy) return;
 
-    searching = true;
-
+    busy = true;
     clearResult();
 
-    document.getElementById("searchButton").disabled = true;
-
-    showStatus("Ищем товар в базе данных...", "");
+    message("Ищем товар в базе данных...");
 
     try {
-        const data = await fetchProduct(code);
 
-        const product = data && data.product;
+        const product = await fetchProduct(code);
 
         if (!product) {
-            showStatus(
-                "Товар с таким штрихкодом не найден в базе Open Food Facts.",
-                "error"
-            );
+            message("Товар не найден.", "error");
             return;
         }
 
-        if (!isRussianProduct(product)) {
-            showStatus(
-                "Товар не прошёл проверку.\n\nВ базе не указано подтверждённое российское место производства. Поэтому мы не можем добавить его в российскую базу.",
+        if (!isRussian(product)) {
+            message(
+                "Товар не прошёл проверку российского производства.\n\nВ базе нет подтверждения, что он произведён в России. Поэтому мы не будем показывать его как российский.",
                 "error"
             );
             return;
@@ -612,156 +563,128 @@ async function lookup(code) {
             product.product_name_ru ||
             product.product_name ||
             product.generic_name ||
-            "Название не указано";
+            "Название неизвестно";
 
-        setText("productName", name);
+        put("productName", name);
+        put("productBrand", "Бренд: " + (product.brands || "не указан"));
+        put("productCode", "Штрихкод: " + code);
 
-        setText(
-            "productBrand",
-            "Бренд: " + (product.brands || "не указан")
-        );
+        put("countryInfo", product.manufacturing_places);
 
-        setText("productCode", "Штрихкод: " + code);
-
-        setText(
-            "countryInfo",
-            product.manufacturing_places
-        );
-
-        setText(
+        put(
             "generalInfo",
             "Количество: " + (product.quantity || "не указано") +
             "\nКатегории: " + (product.categories || "не указаны") +
             "\nМагазины: " + (product.stores || "не указаны")
         );
 
-        setText(
+        put(
             "compositionInfo",
             product.ingredients_text_ru ||
-            product.ingredients_text ||
-            "Состав не указан."
+            product.ingredients_text
         );
 
-        setText(
+        put(
             "allergensInfo",
-            product.allergens ||
-            "Информация об аллергенах отсутствует."
+            product.allergens
         );
 
         const packaging = getPackaging(product);
         const materials = getMaterials(product);
 
-        setText("packagingInfo", packaging);
-        setText("materialInfo", materials);
-        setText("disposalInfo", getDisposal(materials));
+        put("packagingInfo", packaging);
+        put("materialInfo", materials);
+        put("disposalInfo", getDisposal(materials));
 
-        setText(
+        put(
             "additionalInfo",
-            "Маркировки: " + (product.labels || "не указаны") +
+            "Маркировки: " + (product.labels || "нет данных") +
             "\nNutri-Score: " + (product.nutriscore_grade || "нет данных") +
             "\nEco-Score: " + (product.ecoscore_grade || "нет данных")
         );
 
         const image = document.getElementById("productImage");
 
-        image.style.display = "none";
-
-        const imageUrl =
+        const imageURL =
             product.image_front_url ||
             product.image_url;
 
-        if (imageUrl) {
-            image.onload = () => {
-                image.style.display = "block";
-            };
-
-            image.onerror = () => {
-                image.style.display = "none";
-            };
-
-            image.src = imageUrl;
+        if (imageURL) {
+            image.onload = () => image.style.display = "block";
+            image.onerror = () => image.style.display = "none";
+            image.src = imageURL;
         }
 
         resultBlock.style.display = "block";
 
-        showStatus(
-            "Товар найден. Российское место производства указано в базе.",
+        message(
+            "Товар найден. Российское производство подтверждено указанными в базе данными.",
             "success"
         );
 
     } catch (error) {
-        console.error("Ошибка поиска:", error);
+
+        console.error(error);
 
         if (error.name === "AbortError") {
-            showStatus(
-                "Сервер не ответил за 15 секунд. Попробуй ещё раз.",
-                "error"
-            );
-        } else if (error instanceof TypeError) {
-            showStatus(
-                "Не удалось подключиться к Open Food Facts. Проверь интернет или попробуй позже.",
-                "error"
-            );
+            message("Сервер не ответил вовремя. Попробуй ещё раз.", "error");
         } else {
-            showStatus(
-                error.message || "Произошла неизвестная ошибка.",
+            message(
+                "Ошибка получения данных: " + error.message +
+                "\nПроверь соединение и попробуй ещё раз.",
                 "error"
             );
         }
 
     } finally {
-        searching = false;
-        document.getElementById("searchButton").disabled = false;
+        busy = false;
     }
 }
 
 function manualSearch() {
-    const code = document.getElementById("barcodeInput").value;
-    lookup(code);
+    lookup(document.getElementById("barcodeInput").value);
 }
 
 document.getElementById("barcodeInput")
-    .addEventListener("keydown", event => {
-        if (event.key === "Enter") {
-            manualSearch();
-        }
-    });
+.addEventListener("keydown", event => {
+    if (event.key === "Enter") manualSearch();
+});
 
-/* КАМЕРА */
+/* Камера */
 
 async function startCamera() {
 
-    if (cameraRunning) return;
-
     if (!window.isSecureContext) {
-        showCameraStatus(
-            "Для работы камеры открой сайт через HTTPS или localhost.",
+        cameraMessage(
+            "Камера работает только через HTTPS или localhost.",
             "error"
         );
         return;
     }
 
     if (!window.ZXing) {
-        showCameraStatus(
-            "Не удалось загрузить библиотеку сканирования. Обнови страницу и проверь интернет.",
+        cameraMessage(
+            "Библиотека сканирования не загрузилась. Обнови страницу.",
             "error"
         );
         return;
     }
 
     try {
+
         reader = new ZXing.BrowserMultiFormatReader();
 
         video.style.display = "block";
 
-        showCameraStatus("Запрашиваем разрешение на камеру...");
+        cameraMessage("Подключаем камеру...");
 
-        cameraControls = await reader.decodeFromVideoDevice(
+        controls = await reader.decodeFromVideoDevice(
             undefined,
             video,
             (result, error) => {
 
-                if (result) {
+                if (result && !busy) {
+
                     const code = result.getText();
 
                     document.getElementById("barcodeInput").value = code;
@@ -773,20 +696,16 @@ async function startCamera() {
             }
         );
 
-        cameraRunning = true;
-
-        showCameraStatus(
-            "Камера включена. Наведи её на штрихкод.",
-            "success"
-        );
+        cameraMessage("Камера работает. Наведи её на штрихкод.", "success");
 
     } catch (error) {
-        console.error("Ошибка камеры:", error);
+
+        console.error(error);
 
         stopCamera();
 
-        showCameraStatus(
-            "Не удалось включить камеру. Разреши доступ к камере в настройках браузера.",
+        cameraMessage(
+            "Не удалось включить камеру. Разреши доступ к ней в браузере.",
             "error"
         );
     }
@@ -794,9 +713,9 @@ async function startCamera() {
 
 function stopCamera() {
 
-    if (cameraControls) {
-        cameraControls.stop();
-        cameraControls = null;
+    if (controls) {
+        controls.stop();
+        controls = null;
     }
 
     if (reader) {
@@ -811,11 +730,9 @@ function stopCamera() {
 
     video.pause();
     video.style.display = "none";
-
-    cameraRunning = false;
 }
 
-/* ЗАГРУЗКА ФОТОГРАФИИ */
+/* Загрузка фотографии */
 
 document.getElementById("photoInput")
 .addEventListener("change", async event => {
@@ -824,25 +741,20 @@ document.getElementById("photoInput")
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-        showStatus("Выбери файл изображения.", "error");
-        return;
-    }
-
-    if (!window.ZXing) {
-        showStatus("Библиотека сканирования не загрузилась.", "error");
-        return;
-    }
-
-    let objectUrl = null;
+    let url = null;
 
     try {
-        showStatus("Распознаём штрихкод на фотографии...");
+
+        if (!window.ZXing) {
+            throw new Error("Библиотека сканирования не загрузилась.");
+        }
+
+        message("Распознаём штрихкод...");
 
         const image = new Image();
 
-        objectUrl = URL.createObjectURL(file);
-        image.src = objectUrl;
+        url = URL.createObjectURL(file);
+        image.src = url;
 
         await new Promise((resolve, reject) => {
             image.onload = resolve;
@@ -860,17 +772,17 @@ document.getElementById("photoInput")
         lookup(code);
 
     } catch (error) {
-        console.error("Ошибка распознавания:", error);
 
-        showStatus(
-            "Не удалось распознать штрихкод. Попробуй загрузить более чёткую фотографию.",
+        console.error(error);
+
+        message(
+            "Не удалось распознать штрихкод. Попробуй более чёткую фотографию.",
             "error"
         );
 
     } finally {
-        if (objectUrl) {
-            URL.revokeObjectURL(objectUrl);
-        }
+
+        if (url) URL.revokeObjectURL(url);
 
         event.target.value = "";
     }
