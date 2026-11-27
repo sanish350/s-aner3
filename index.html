@@ -10,146 +10,185 @@
 <style>
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
     background: #f1f7f2;
-    color: #24352b;
+    color: #203329;
 }
 
 header {
-    background: #218c53;
+    background: linear-gradient(135deg, #176b3a, #279653);
     color: white;
-    padding: 28px 15px;
+    padding: 35px 20px;
     text-align: center;
 }
 
 header h1 {
-    margin: 0 0 10px;
     font-size: 30px;
+    margin-bottom: 10px;
 }
 
 header p {
-    margin: 0;
-    opacity: 0.9;
+    opacity: .9;
+    line-height: 1.5;
 }
 
 .container {
-    max-width: 760px;
+    max-width: 900px;
     margin: 30px auto;
-    padding: 20px;
+    padding: 0 15px;
 }
 
 .card {
     background: white;
-    border-radius: 18px;
     padding: 25px;
+    border-radius: 18px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 18px rgba(0,0,0,.06);
 }
 
 h2 {
-    margin-top: 0;
-    color: #218c53;
-}
-
-button, .file-label {
-    display: inline-block;
-    border: none;
-    border-radius: 10px;
-    padding: 13px 18px;
-    margin: 5px 3px;
-    background: #218c53;
-    color: white;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-button:hover, .file-label:hover {
-    background: #176d3f;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #ccd8ce;
-    border-radius: 10px;
-    font-size: 16px;
-    margin: 10px 0;
+    color: #176b3a;
+    margin-bottom: 18px;
 }
 
 video {
     width: 100%;
     max-height: 350px;
-    background: #17231b;
+    background: #111;
     border-radius: 12px;
-    margin-top: 15px;
     display: none;
+    object-fit: cover;
+    margin-bottom: 15px;
 }
 
-#result {
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cbd9ce;
+    border-radius: 10px;
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+button, .file-label {
+    display: inline-block;
+    border: none;
+    background: #21864b;
+    color: white;
+    padding: 13px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    margin: 5px 3px;
+}
+
+button:hover, .file-label:hover {
+    background: #176b3a;
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+button.secondary {
+    background: #e4f2e8;
+    color: #176b3a;
+}
+
+button.secondary:hover {
+    background: #d1e9d8;
+}
+
+.file-label input {
     display: none;
-}
-
-.product-image {
-    width: 140px;
-    max-height: 180px;
-    object-fit: contain;
-    display: block;
-    margin: 15px auto;
-}
-
-.info {
-    background: #f1f7f2;
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 12px;
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-}
-
-.info strong {
-    color: #218c53;
-}
-
-.bin {
-    font-size: 18px;
-    font-weight: bold;
-    color: #176d3f;
 }
 
 .status {
-    margin-top: 12px;
-    color: #52665a;
+    padding: 14px;
+    border-radius: 10px;
+    margin-top: 15px;
+    background: #edf5ef;
+    color: #245c37;
     line-height: 1.5;
+    display: none;
+    white-space: pre-line;
 }
 
-.note {
-    font-size: 13px;
-    color: #66766b;
-    line-height: 1.5;
+.status.error {
+    background: #fff0ef;
+    color: #a52c25;
+}
+
+.status.success {
+    background: #e5f6e9;
+    color: #176b3a;
+}
+
+.result {
+    display: none;
+}
+
+.product-top {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.product-top img {
+    width: 140px;
+    max-height: 160px;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.product-name {
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.product-brand {
+    color: #718078;
+}
+
+.info-box {
+    background: #f5f9f5;
+    border-left: 4px solid #299653;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 15px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+.info-box h3 {
+    color: #176b3a;
+    margin-bottom: 7px;
 }
 
 footer {
     text-align: center;
+    color: #819087;
     padding: 25px;
-    color: #718076;
     font-size: 13px;
+    line-height: 1.5;
 }
 
-@media(max-width: 500px) {
-    .container {
-        padding: 12px;
+@media(max-width:600px) {
+    header h1 {
+        font-size: 24px;
     }
 
     .card {
         padding: 18px;
-    }
-
-    header h1 {
-        font-size: 25px;
     }
 }
 </style>
@@ -159,7 +198,7 @@ footer {
 
 <header>
     <h1>♻ Сортировка отходов</h1>
-    <p>Узнай, из чего состоит упаковка и куда её выбрасывать</p>
+    <p>Узнай, из чего сделан товар и как правильно утилизировать его упаковку</p>
 </header>
 
 <div class="container">
@@ -167,497 +206,675 @@ footer {
     <div class="card">
         <h2>Сканирование товара</h2>
 
-        <p>Наведите камеру на штрихкод товара.</p>
-
-        <button id="scanButton" onclick="toggleScan()">
-            📷 Начать сканирование
-        </button>
-
-        <label class="file-label" for="galleryInput">
-            🖼 Выбрать фото
-        </label>
-
-        <input
-            type="file"
-            id="galleryInput"
-            accept="image/*"
-            hidden
-        >
-
         <video id="video" autoplay muted playsinline></video>
 
-        <p class="note">
-            Для работы камеры сайт должен быть открыт через HTTPS.
-        </p>
+        <button id="startCameraButton" onclick="startCamera()">
+            Включить камеру
+        </button>
 
-        <div class="status" id="status"></div>
+        <button class="secondary" onclick="stopCamera()">
+            Выключить камеру
+        </button>
+
+        <div class="info-box">
+            Наведи камеру на штрихкод товара. Постарайся, чтобы код полностью помещался в кадре.
+        </div>
+
+        <div id="cameraStatus" class="status"></div>
     </div>
 
     <div class="card">
-        <h2>Ввести штрихкод вручную</h2>
+        <h2>Ввести штрихкод</h2>
 
         <input
+            id="barcodeInput"
             type="text"
-            id="manual"
-            placeholder="Например, 4601234567890"
             inputmode="numeric"
+            maxlength="14"
+            placeholder="Введите штрихкод товара"
         >
 
-        <button onclick="manualSearch()">
+        <button id="searchButton" onclick="manualSearch()">
             Найти товар
         </button>
+
+        <br>
+
+        <label class="file-label">
+            Загрузить фотографию
+            <input id="photoInput" type="file" accept="image/*">
+        </label>
     </div>
 
-    <div class="card" id="result">
-        <h2>Результат поиска</h2>
+    <div id="mainStatus" class="status"></div>
 
-        <div id="productInfo"></div>
+    <div id="result" class="result">
 
-        <div id="compositionInfo" class="info"></div>
+        <div class="card">
+            <h2>Информация о товаре</h2>
 
-        <div id="materialInfo" class="info"></div>
+            <div class="product-top">
+                <img id="productImage" alt="Фото товара">
 
-        <div id="disposalInfo" class="info"></div>
-    </div>
+                <div>
+                    <div class="product-name" id="productName"></div>
+                    <div class="product-brand" id="productBrand"></div>
+                    <p id="productCode" style="margin-top:10px"></p>
+                </div>
+            </div>
 
-    <div class="card">
-        <h2>Как это работает?</h2>
+            <div class="info-box">
+                <h3>Страна производства</h3>
+                <div id="countryInfo"></div>
+            </div>
 
-        <p>
-            1. Отсканируйте штрихкод товара.
-        </p>
+            <div class="info-box">
+                <h3>Основная информация</h3>
+                <div id="generalInfo"></div>
+            </div>
 
-        <p>
-            2. Сайт найдёт информацию о товаре в базе Open Food Facts.
-        </p>
+            <div class="info-box">
+                <h3>Состав продукта</h3>
+                <div id="compositionInfo"></div>
+            </div>
 
-        <p>
-            3. Вы увидите состав продукта и информацию об упаковке.
-        </p>
+            <div class="info-box">
+                <h3>Аллергены</h3>
+                <div id="allergensInfo"></div>
+            </div>
 
-        <p>
-            4. Сайт подскажет, как правильно сортировать упаковку.
-        </p>
+            <div class="info-box">
+                <h3>Упаковка</h3>
+                <div id="packagingInfo"></div>
+            </div>
+
+            <div class="info-box">
+                <h3>Материалы упаковки</h3>
+                <div id="materialInfo"></div>
+            </div>
+
+            <div class="info-box">
+                <h3>Куда выбрасывать</h3>
+                <div id="disposalInfo"></div>
+            </div>
+
+            <div class="info-box">
+                <h3>Дополнительная информация</h3>
+                <div id="additionalInfo"></div>
+            </div>
+        </div>
+
     </div>
 
 </div>
 
 <footer>
-    Информация о товарах предоставляется базой Open Food Facts.
-    Данные об упаковке могут быть неполными.
+    Данные предоставляются Open Food Facts.
+    Информация о товарах и упаковке может быть неполной.
 </footer>
 
 <script>
+const API = "https://world.openfoodfacts.org/api/v3.6/product/";
 
 const video = document.getElementById("video");
-const statusBox = document.getElementById("status");
-const resultBox = document.getElementById("result");
+const mainStatus = document.getElementById("mainStatus");
+const cameraStatus = document.getElementById("cameraStatus");
+const resultBlock = document.getElementById("result");
 
 let reader = null;
-let scanning = false;
-let controls = null;
+let cameraControls = null;
+let searching = false;
+let cameraRunning = false;
 
-// Материалы упаковки
+function showStatus(message, type = "") {
+    mainStatus.style.display = "block";
+    mainStatus.className = "status " + type;
+    mainStatus.textContent = message;
+}
 
-const MATERIALS = [
-    {
-        name: "ПЭТ-пластик",
-        regex: /pet|пэт|polyethylene terephthalate|01/,
-        bin: "Контейнер для пластика",
-        description: "Упаковка изготовлена из ПЭТ-пластика. Перед сдачей её желательно очистить и смять."
-    },
-    {
-        name: "Полиэтилен высокой плотности (HDPE)",
-        regex: /hdpe|high.?density polyethylene|02|пнд/,
-        bin: "Контейнер для пластика",
-        description: "Это полиэтилен высокой плотности. Возможность переработки зависит от местного приёма."
-    },
-    {
-        name: "Полиэтилен низкой плотности (LDPE)",
-        regex: /ldpe|low.?density polyethylene|04|пнд низкой/,
-        bin: "Контейнер для пластика",
-        description: "Это мягкий полиэтилен. Принимается не всеми пунктами сортировки."
-    },
-    {
-        name: "Полипропилен (PP)",
-        regex: /polypropylene|полипропилен|pp|05/,
-        bin: "Контейнер для пластика",
-        description: "Упаковка сделана из полипропилена. Перед сортировкой её следует очистить."
-    },
-    {
-        name: "Полистирол (PS)",
-        regex: /polystyrene|полистирол|06/,
-        bin: "Уточнить местный приём",
-        description: "Полистирол перерабатывается не везде. Проверьте правила местного оператора."
-    },
-    {
-        name: "Стекло",
-        regex: /glass|стекло|verre/,
-        bin: "Контейнер для стекла",
-        description: "Стеклянную упаковку желательно очистить от остатков содержимого."
-    },
-    {
-        name: "Металл",
-        regex: /aluminium|aluminum|metal|steel|металл|алюмини/,
-        bin: "Контейнер для металла",
-        description: "Металлическая упаковка может отправляться на переработку после очистки."
-    },
-    {
-        name: "Бумага или картон",
-        regex: /paper|cardboard|carton|бумаг|картон/,
-        bin: "Контейнер для бумаги",
-        description: "Бумажную упаковку нужно сдавать сухой и чистой."
-    },
-    {
-        name: "Многослойная упаковка",
-        regex: /tetra.?pak|composite|multilayer|многослой/,
-        bin: "Специальный приём или смешанные отходы",
-        description: "Упаковка состоит из нескольких слоёв разных материалов. Для неё требуется специальная переработка."
+function showCameraStatus(message, type = "") {
+    cameraStatus.style.display = "block";
+    cameraStatus.className = "status " + type;
+    cameraStatus.textContent = message;
+}
+
+function setText(id, value) {
+    const element = document.getElementById(id);
+
+    if (value === undefined || value === null || value === "") {
+        element.textContent = "Информация отсутствует в базе данных.";
+    } else {
+        element.textContent = String(value);
     }
-];
+}
 
-function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, function(char) {
-        return {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#039;"
-        }[char];
+function normalize(value) {
+    return String(value || "")
+        .toLowerCase()
+        .replace(/ё/g, "е")
+        .trim();
+}
+
+function clearResult() {
+    resultBlock.style.display = "none";
+
+    document.getElementById("productImage").style.display = "none";
+
+    [
+        "productName",
+        "productBrand",
+        "productCode",
+        "countryInfo",
+        "generalInfo",
+        "compositionInfo",
+        "allergensInfo",
+        "packagingInfo",
+        "materialInfo",
+        "disposalInfo",
+        "additionalInfo"
+    ].forEach(id => {
+        document.getElementById(id).textContent = "";
     });
 }
 
-// Поиск материала упаковки
+/* ПРОВЕРКА РОССИЙСКОГО ПРОИЗВОДСТВА */
 
-function findMaterial(packagingText) {
-    const text = packagingText.toLowerCase();
+function isRussianProduct(product) {
+    const places = normalize(product.manufacturing_places);
 
-    for (const material of MATERIALS) {
-        if (material.regex.test(text)) {
-            return material;
+    if (!places) {
+        return false;
+    }
+
+    const patterns = [
+        /россия/i,
+        /российская федерация/i,
+        /\brussia\b/i,
+        /\brussian federation\b/i
+    ];
+
+    return patterns.some(pattern => pattern.test(places));
+}
+
+/* ПОЛУЧЕНИЕ ДАННЫХ */
+
+async function fetchProduct(code) {
+
+    const url =
+        API +
+        encodeURIComponent(code) +
+        ".json?cc=ru&lc=ru&tags_lc=ru";
+
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+        controller.abort();
+    }, 15000);
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            signal: controller.signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                "Ошибка сервера Open Food Facts: HTTP " + response.status
+            );
         }
-    }
 
-    return null;
+        return await response.json();
+
+    } finally {
+        clearTimeout(timeout);
+    }
 }
 
-// Остановка камеры
+/* УПАКОВКА */
 
-function stopScan() {
-    scanning = false;
+function getPackaging(product) {
+    const result = [];
 
-    if (controls) {
-        controls.stop();
-        controls = null;
+    if (product.packaging) {
+        result.push("Описание: " + product.packaging);
     }
 
-    video.pause();
-    video.srcObject = null;
-    video.style.display = "none";
+    if (product.packaging_text) {
+        result.push("Дополнительно: " + product.packaging_text);
+    }
 
-    document.getElementById("scanButton").textContent =
-        "📷 Начать сканирование";
+    if (Array.isArray(product.packaging_tags) &&
+        product.packaging_tags.length) {
+        result.push(
+            "Типы упаковки: " + product.packaging_tags.join(", ")
+        );
+    }
+
+    return result.length
+        ? result.join("\n")
+        : "Информация об упаковке отсутствует.";
 }
 
-// Запуск и остановка сканирования
+/* МАТЕРИАЛЫ */
 
-async function toggleScan() {
+function getMaterials(product) {
+    const materials = [];
 
-    if (scanning) {
-        stopScan();
-        statusBox.textContent = "Сканирование остановлено.";
+    if (product.packaging_materials) {
+        materials.push(product.packaging_materials);
+    }
+
+    if (Array.isArray(product.packaging_tags)) {
+        materials.push(...product.packaging_tags);
+    }
+
+    if (Array.isArray(product.packagings)) {
+        product.packagings.forEach(item => {
+            if (item.material) {
+                materials.push(
+                    typeof item.material === "object"
+                        ? item.material.lc_name || item.material.id
+                        : item.material
+                );
+            }
+        });
+    }
+
+    const unique = [...new Set(materials.filter(Boolean))];
+
+    return unique.length
+        ? unique.join(", ")
+        : "Материал упаковки не указан.";
+}
+
+/* РЕКОМЕНДАЦИИ ПО СОРТИРОВКЕ */
+
+function getDisposal(materials) {
+    const text = normalize(materials);
+    const recommendations = [];
+
+    if (
+        text.includes("pet") ||
+        text.includes("пэт") ||
+        text.includes("polyethylene terephthalate")
+    ) {
+        recommendations.push(
+            "ПЭТ: проверь маркировку. Чистую пластиковую бутылку можно сдавать в соответствующий сбор пластика, если он предусмотрен местными правилами."
+        );
+    }
+
+    if (
+        text.includes("hdpe") ||
+        text.includes("пнд") ||
+        text.includes("high density polyethylene")
+    ) {
+        recommendations.push(
+            "ПНД: проверь, принимается ли этот вид пластика в твоём пункте сбора."
+        );
+    }
+
+    if (
+        text.includes("polypropylene") ||
+        text.includes("полипропилен") ||
+        /\bpp\b/.test(text)
+    ) {
+        recommendations.push(
+            "Полипропилен: проверь маркировку и местные правила приёма пластика."
+        );
+    }
+
+    if (
+        text.includes("paper") ||
+        text.includes("cardboard") ||
+        text.includes("бумага") ||
+        text.includes("картон")
+    ) {
+        recommendations.push(
+            "Бумага и картон: обычно относятся к бумажному вторсырью. Упаковка должна быть сухой и чистой."
+        );
+    }
+
+    if (
+        text.includes("glass") ||
+        text.includes("стекло")
+    ) {
+        recommendations.push(
+            "Стекло: сдавай в контейнер для стекла, если такой сбор предусмотрен."
+        );
+    }
+
+    if (
+        text.includes("aluminium") ||
+        text.includes("алюминий")
+    ) {
+        recommendations.push(
+            "Алюминий: можно сдавать в соответствующий сбор металла."
+        );
+    }
+
+    if (!recommendations.length) {
+        return "Не удалось точно определить материал. Проверь маркировку на упаковке. Не выбрасывай её в переработку наугад.";
+    }
+
+    return recommendations.join("\n\n") +
+        "\n\nПравила приёма могут отличаться в зависимости от региона.";
+}
+
+/* ПОИСК */
+
+async function lookup(code) {
+
+    code = String(code || "").replace(/\D/g, "");
+
+    if (!/^\d{8,14}$/.test(code)) {
+        showStatus(
+            "Введите корректный штрихкод длиной от 8 до 14 цифр.",
+            "error"
+        );
         return;
     }
 
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        statusBox.textContent =
-            "Камера недоступна. Откройте сайт через HTTPS или localhost.";
+    if (searching) return;
+
+    searching = true;
+
+    clearResult();
+
+    document.getElementById("searchButton").disabled = true;
+
+    showStatus("Ищем товар в базе данных...", "");
+
+    try {
+        const data = await fetchProduct(code);
+
+        const product = data && data.product;
+
+        if (!product) {
+            showStatus(
+                "Товар с таким штрихкодом не найден в базе Open Food Facts.",
+                "error"
+            );
+            return;
+        }
+
+        if (!isRussianProduct(product)) {
+            showStatus(
+                "Товар не прошёл проверку.\n\nВ базе не указано подтверждённое российское место производства. Поэтому мы не можем добавить его в российскую базу.",
+                "error"
+            );
+            return;
+        }
+
+        const name =
+            product.product_name_ru ||
+            product.product_name ||
+            product.generic_name ||
+            "Название не указано";
+
+        setText("productName", name);
+
+        setText(
+            "productBrand",
+            "Бренд: " + (product.brands || "не указан")
+        );
+
+        setText("productCode", "Штрихкод: " + code);
+
+        setText(
+            "countryInfo",
+            product.manufacturing_places
+        );
+
+        setText(
+            "generalInfo",
+            "Количество: " + (product.quantity || "не указано") +
+            "\nКатегории: " + (product.categories || "не указаны") +
+            "\nМагазины: " + (product.stores || "не указаны")
+        );
+
+        setText(
+            "compositionInfo",
+            product.ingredients_text_ru ||
+            product.ingredients_text ||
+            "Состав не указан."
+        );
+
+        setText(
+            "allergensInfo",
+            product.allergens ||
+            "Информация об аллергенах отсутствует."
+        );
+
+        const packaging = getPackaging(product);
+        const materials = getMaterials(product);
+
+        setText("packagingInfo", packaging);
+        setText("materialInfo", materials);
+        setText("disposalInfo", getDisposal(materials));
+
+        setText(
+            "additionalInfo",
+            "Маркировки: " + (product.labels || "не указаны") +
+            "\nNutri-Score: " + (product.nutriscore_grade || "нет данных") +
+            "\nEco-Score: " + (product.ecoscore_grade || "нет данных")
+        );
+
+        const image = document.getElementById("productImage");
+
+        image.style.display = "none";
+
+        const imageUrl =
+            product.image_front_url ||
+            product.image_url;
+
+        if (imageUrl) {
+            image.onload = () => {
+                image.style.display = "block";
+            };
+
+            image.onerror = () => {
+                image.style.display = "none";
+            };
+
+            image.src = imageUrl;
+        }
+
+        resultBlock.style.display = "block";
+
+        showStatus(
+            "Товар найден. Российское место производства указано в базе.",
+            "success"
+        );
+
+    } catch (error) {
+        console.error("Ошибка поиска:", error);
+
+        if (error.name === "AbortError") {
+            showStatus(
+                "Сервер не ответил за 15 секунд. Попробуй ещё раз.",
+                "error"
+            );
+        } else if (error instanceof TypeError) {
+            showStatus(
+                "Не удалось подключиться к Open Food Facts. Проверь интернет или попробуй позже.",
+                "error"
+            );
+        } else {
+            showStatus(
+                error.message || "Произошла неизвестная ошибка.",
+                "error"
+            );
+        }
+
+    } finally {
+        searching = false;
+        document.getElementById("searchButton").disabled = false;
+    }
+}
+
+function manualSearch() {
+    const code = document.getElementById("barcodeInput").value;
+    lookup(code);
+}
+
+document.getElementById("barcodeInput")
+    .addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            manualSearch();
+        }
+    });
+
+/* КАМЕРА */
+
+async function startCamera() {
+
+    if (cameraRunning) return;
+
+    if (!window.isSecureContext) {
+        showCameraStatus(
+            "Для работы камеры открой сайт через HTTPS или localhost.",
+            "error"
+        );
+        return;
+    }
+
+    if (!window.ZXing) {
+        showCameraStatus(
+            "Не удалось загрузить библиотеку сканирования. Обнови страницу и проверь интернет.",
+            "error"
+        );
         return;
     }
 
     try {
         reader = new ZXing.BrowserMultiFormatReader();
 
-        scanning = true;
-
         video.style.display = "block";
 
-        document.getElementById("scanButton").textContent =
-            "Остановить сканирование";
+        showCameraStatus("Запрашиваем разрешение на камеру...");
 
-        statusBox.textContent = "Запрашиваем доступ к камере...";
-
-        controls = await reader.decodeFromVideoDevice(
+        cameraControls = await reader.decodeFromVideoDevice(
             undefined,
             video,
-            function(result, error) {
+            (result, error) => {
 
-                if (result && scanning) {
-
+                if (result) {
                     const code = result.getText();
 
-                    stopScan();
+                    document.getElementById("barcodeInput").value = code;
 
-                    document.getElementById("manual").value = code;
+                    stopCamera();
 
                     lookup(code);
                 }
             }
         );
 
-        statusBox.textContent = "Наведите камеру на штрихкод.";
+        cameraRunning = true;
+
+        showCameraStatus(
+            "Камера включена. Наведи её на штрихкод.",
+            "success"
+        );
 
     } catch (error) {
+        console.error("Ошибка камеры:", error);
 
-        stopScan();
+        stopCamera();
 
-        statusBox.textContent =
-            "Не удалось запустить камеру. Проверьте разрешение на использование камеры.";
+        showCameraStatus(
+            "Не удалось включить камеру. Разреши доступ к камере в настройках браузера.",
+            "error"
+        );
     }
 }
 
-// Ручной ввод
+function stopCamera() {
 
-function manualSearch() {
-    const code = document.getElementById("manual").value;
-    lookup(code);
+    if (cameraControls) {
+        cameraControls.stop();
+        cameraControls = null;
+    }
+
+    if (reader) {
+        reader.reset();
+        reader = null;
+    }
+
+    if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+    }
+
+    video.pause();
+    video.style.display = "none";
+
+    cameraRunning = false;
 }
 
-// Загрузка фотографии
+/* ЗАГРУЗКА ФОТОГРАФИИ */
 
-document.getElementById("galleryInput").addEventListener(
-    "change",
-    async function(event) {
+document.getElementById("photoInput")
+.addEventListener("change", async event => {
 
-        const file = event.target.files[0];
+    const file = event.target.files[0];
 
-        if (!file) return;
+    if (!file) return;
 
-        statusBox.textContent = "Распознаём штрихкод на фотографии...";
-
-        try {
-
-            const image = new Image();
-
-            image.src = URL.createObjectURL(file);
-
-            await new Promise((resolve, reject) => {
-                image.onload = resolve;
-                image.onerror = reject;
-            });
-
-            const imageReader =
-                new ZXing.BrowserMultiFormatReader();
-
-            const result =
-                await imageReader.decodeFromImageElement(image);
-
-            URL.revokeObjectURL(image.src);
-
-            const code = result.getText();
-
-            document.getElementById("manual").value = code;
-
-            lookup(code);
-
-        } catch (error) {
-
-            statusBox.textContent =
-                "Штрихкод не найден. Попробуйте выбрать более чёткую фотографию.";
-
-        } finally {
-
-            event.target.value = "";
-
-        }
-    }
-);
-
-// Поиск товара в Open Food Facts
-
-async function lookup(code) {
-
-    code = String(code).replace(/\D/g, "");
-
-    if (!code) {
-        statusBox.textContent = "Введите штрихкод товара.";
+    if (!file.type.startsWith("image/")) {
+        showStatus("Выбери файл изображения.", "error");
         return;
     }
 
-    if (!/^(8|12|13|14)$/.test(String(code.length))) {
-        statusBox.textContent =
-            "Проверьте штрихкод. Обычно он содержит 8, 12, 13 или 14 цифр.";
+    if (!window.ZXing) {
+        showStatus("Библиотека сканирования не загрузилась.", "error");
         return;
     }
 
-    stopScan();
-
-    resultBox.style.display = "block";
-
-    document.getElementById("productInfo").innerHTML = "";
-    document.getElementById("compositionInfo").innerHTML = "";
-    document.getElementById("materialInfo").innerHTML = "";
-    document.getElementById("disposalInfo").innerHTML = "";
-
-    statusBox.textContent = "Ищем товар в базе данных...";
+    let objectUrl = null;
 
     try {
+        showStatus("Распознаём штрихкод на фотографии...");
 
-        const url =
-            "https://world.openfoodfacts.org/api/v2/product/" +
-            encodeURIComponent(code) +
-            ".json?fields=product_name,product_name_ru,brands,image_front_url,ingredients_text,ingredients_text_ru,packaging,packaging_materials,packaging_tags,categories,categories_tags";
+        const image = new Image();
 
-        const response = await fetch(url);
+        objectUrl = URL.createObjectURL(file);
+        image.src = objectUrl;
 
-        if (!response.ok) {
-            throw new Error("Ошибка соединения с базой.");
-        }
-
-        const data = await response.json();
-
-        if (data.status !== 1 || !data.product) {
-
-            statusBox.textContent =
-                "Товар не найден. Попробуйте другой штрихкод.";
-
-            document.getElementById("productInfo").innerHTML =
-                "<p>В базе пока нет информации об этом товаре.</p>";
-
-            return;
-        }
-
-        const product = data.product;
-
-        const name =
-            product.product_name_ru ||
-            product.product_name ||
-            "Название неизвестно";
-
-        const brand = product.brands || "Не указан";
-
-        // Информация о товаре
-
-        let productHTML = `
-            <h3>${escapeHTML(name)}</h3>
-            <p><strong>Бренд:</strong> ${escapeHTML(brand)}</p>
-            <p><strong>Штрихкод:</strong> ${escapeHTML(code)}</p>
-        `;
-
-        if (product.image_front_url) {
-            productHTML += `
-                <img
-                    class="product-image"
-                    src="${escapeHTML(product.image_front_url)}"
-                    alt="Изображение товара"
-                >
-            `;
-        }
-
-        document.getElementById("productInfo").innerHTML =
-            productHTML;
-
-        // Состав продукта
-
-        const ingredients =
-            product.ingredients_text_ru ||
-            product.ingredients_text ||
-            "";
-
-        if (ingredients) {
-
-            document.getElementById("compositionInfo").innerHTML = `
-                <strong>🧾 Состав продукта:</strong>
-                <p>${escapeHTML(ingredients)}</p>
-            `;
-
-        } else {
-
-            document.getElementById("compositionInfo").innerHTML = `
-                <strong>🧾 Состав продукта:</strong>
-                <p>Информация о составе отсутствует в базе данных.</p>
-            `;
-        }
-
-        // Информация об упаковке
-
-        const packaging = product.packaging || "";
-
-        const packagingMaterials =
-            product.packaging_materials || "";
-
-        const packagingTags =
-            Array.isArray(product.packaging_tags)
-                ? product.packaging_tags.join(", ")
-                : "";
-
-        const packagingText = [
-            packagingMaterials,
-            packagingTags,
-            packaging
-        ].filter(Boolean).join(" ");
-
-        const material = findMaterial(packagingText);
-
-        if (material) {
-
-            document.getElementById("materialInfo").innerHTML = `
-                <strong>📦 Из чего сделана упаковка:</strong>
-                <p>${escapeHTML(material.name)}</p>
-                <p>${escapeHTML(material.description)}</p>
-                ${packaging ? `<p><strong>Описание упаковки:</strong> ${escapeHTML(packaging)}</p>` : ""}
-            `;
-
-            document.getElementById("disposalInfo").innerHTML = `
-                <strong>♻ Куда выбрасывать:</strong>
-                <p class="bin">${escapeHTML(material.bin)}</p>
-                <p>${escapeHTML(
-                    "Перед выбрасыванием очистите упаковку и проверьте, принимается ли этот материал в вашем регионе."
-                )}</p>
-            `;
-
-        } else if (packagingText) {
-
-            document.getElementById("materialInfo").innerHTML = `
-                <strong>📦 Информация об упаковке:</strong>
-                <p>${escapeHTML(packagingText)}</p>
-                <p>Точный материал определить не удалось.</p>
-            `;
-
-            document.getElementById("disposalInfo").innerHTML = `
-                <strong>♻ Куда выбрасывать:</strong>
-                <p>Проверьте маркировку упаковки и правила местного приёма отходов.</p>
-            `;
-
-        } else {
-
-            document.getElementById("materialInfo").innerHTML = `
-                <strong>📦 Из чего сделана упаковка:</strong>
-                <p>Информация об упаковке отсутствует в базе.</p>
-            `;
-
-            document.getElementById("disposalInfo").innerHTML = `
-                <strong>♻ Куда выбрасывать:</strong>
-                <p>Посмотрите маркировку на самой упаковке. По данным базы определить материал не удалось.</p>
-            `;
-        }
-
-        statusBox.textContent = "Товар найден!";
-
-        resultBox.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
+        await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
         });
 
+        const imageReader = new ZXing.BrowserMultiFormatReader();
+
+        const result = await imageReader.decodeFromImageElement(image);
+
+        const code = result.getText();
+
+        document.getElementById("barcodeInput").value = code;
+
+        lookup(code);
+
     } catch (error) {
+        console.error("Ошибка распознавания:", error);
 
-        statusBox.textContent =
-            "Не удалось получить данные. Проверьте подключение к интернету и попробуйте ещё раз.";
+        showStatus(
+            "Не удалось распознать штрихкод. Попробуй загрузить более чёткую фотографию.",
+            "error"
+        );
 
-        console.error(error);
+    } finally {
+        if (objectUrl) {
+            URL.revokeObjectURL(objectUrl);
+        }
+
+        event.target.value = "";
     }
-}
+});
 
 </script>
 
